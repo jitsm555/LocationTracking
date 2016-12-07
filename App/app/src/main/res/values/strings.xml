@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">LocationTracking</string>
+
+
+    <!-- Activity detection strings -->
+    <string name="in_vehicle">In a vehicle</string>
+    <string name="on_bicycle">On a bicycle</string>
+    <string name="on_foot">On foot</string>
+    <string name="running">Running</string>
+    <string name="still">Still</string>
+    <string name="tilting">Tilting</string>
+    <string name="unknown">Unknown activity</string>
+    <string name="walking">Walking</string>
+
+    <string name="unidentifiable_activity">Unidentifiable activity: %1$d</string>
+    <string name="not_connected">GoogleApiClient not yet connected. Try again.</string>
+
+    <string name="activity_updates_added">Activity updates added</string>
+    <string name="activity_updates_removed">Activity updates removed</string>
+
+    <string name="request_activity_updates">Request updates</string>
+    <string name="remove_activity_updates">Remove updates</string>
+
+
+
+    <string name="loc_updates_added">Location updates added</string>
+    <string name="loc_updates_removed">Location updates removed</string>
+    <string name="maps_api_key" translatable="false">
+        AIzaSyAapCr1I_mZleOYT19RNV5-1hU8l2XeJiw</string>
+
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="go">GO</string>
+    <string name="reset">RESET</string>
+    <string name="date">Date</string>
+    <string name="start_time">start time</string>
+    <string name="end_time">end time</string>
+    <string name="loc_permission_granted">Permission Granted, Now you can access location data.</string>
+    <string name="loc_permission_denied">Permission Denied, You cannot access location data.</string>
+    <string name="no_loc_available">Sorry, no locations available for above given time</string>
+    <string name="invalide_date_and_time">Please fill above details</string>
+    <string name="activity_recognition_running">Activity Recognition Already Running</string>
+    <string name="loc_tracking_running">Location Tracking Already Running</string>
+    <string name="please_start_activity_recognition">please start activity recognition</string>
+    <string name="please_start_location_tracking">please start location tracking</string>
+
+    <!--webview details-->
+    <string name="data_unavailable">sorry!! no data is available</string>
+    <string name="bus_tracking">Bus Tracking</string>
+    <string name="please_wait">please wait ...</string>
+    <string name="wrong_url">please check given url</string>
+    <!--placeholder-->
+    <string name="my_position">My Position</string>
+</resources>
