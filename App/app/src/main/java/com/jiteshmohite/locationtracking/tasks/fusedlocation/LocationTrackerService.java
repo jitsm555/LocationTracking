@@ -1,10 +1,9 @@
-package com.jiteshmohite.locationtracking.service;
+package com.jiteshmohite.locationtracking.tasks.fusedlocation;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.location.Location;
 import android.os.IBinder;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.LocationResult;
 import com.jiteshmohite.locationtracking.data.LocationTrackerStore;
@@ -19,6 +18,7 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.LOGD;
 public class LocationTrackerService extends IntentService {
 
     private static final String TAG = LocationTrackerService.class.getName();
+    private LocationTrackerStore trackerStore;
 
     /**
      * This constructor is required, and calls the super IntentService(String) constructor with the
@@ -32,6 +32,7 @@ public class LocationTrackerService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
+        trackerStore = new LocationTrackerStore();
     }
 
     @Override
@@ -42,18 +43,11 @@ public class LocationTrackerService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         LOGD(TAG, "onHandleIntent");
-//        Intent localIntent = new Intent(Constants.BROADCAST_ACTION);
         LocationResult locationResult = LocationResult.extractResult(intent);
         if (locationResult != null) {
             Location location = locationResult.getLastLocation();
             if (location != null) {
-                LocationTrackerStore trackerStore = new LocationTrackerStore();
-                boolean result = trackerStore.saveLocation(getApplicationContext(), location);
-                if (result) {
-                    // Broadcast the locations
-//                    localIntent.putExtra(Constants.ACTIVITY_EXTRA, location);
-//                    LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
-                }
+                trackerStore.saveLocation(getApplicationContext(), location);
             }
         }
     }
@@ -62,5 +56,6 @@ public class LocationTrackerService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         LOGD(TAG, "LocationTrackerService Destroyed");
+        trackerStore = null;
     }
 }

@@ -11,7 +11,7 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 
 /**
  * LocationTrackerDataHelper class will be taking care of all functionality of insert,delete, update
- * and retrieve. Created by jiteshmohite on 10/01/16.
+ * and retrieve. Created by jitesh.mohite on 10/12/16.
  */
 public class LocationTrackerDataHelper {
 

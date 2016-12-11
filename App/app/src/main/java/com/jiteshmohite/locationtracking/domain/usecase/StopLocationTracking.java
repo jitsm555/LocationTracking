@@ -19,7 +19,8 @@ public class StopLocationTracking {
 
     // used to stop location tracking
     public void stopTracking() {
+        mFusedLocationTracker.removeLocationUpdates();
         mFusedLocationTracker.stopLocationTracker();
-        mActivityDetectionRequester.removeActivityUpdates();
+//      mActivityDetectionRequester.removeActivityUpdates(); // activity updates always be active
     }
 }

@@ -5,26 +5,22 @@ import android.text.TextUtils;
 
 import java.util.LinkedHashMap;
 
-import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
-
 /**
- * LocationTrackerInMemory single ton class will be used to maintain data such as locations in
- * in-memory. Created by jiteshmohite on 13/01/16.
+ * LocationFilter single ton class will be used to maintain data such as locations in
+ * in-memory. Created by jitesh.mohite on 13/01/16.
  */
-public class LocationTrackerInMemory {
-
-    private static final String TAG = makeLogTag(LocationTrackerInMemory.class);
-    private static LocationTrackerInMemory mLocationTrackerInMemory;
+public class LocationFilter {
+    private static LocationFilter mLocationFilter;
     private static LinkedHashMap<String, Location> mLocationMap = new LinkedHashMap<String, Location>();
 
     /**
-     * Returns single instance of LocationTrackerInMemory.
+     * Returns single instance of LocationFilter.
      */
-    public synchronized static LocationTrackerInMemory getInstance() {
-        if (mLocationTrackerInMemory == null) {
-            mLocationTrackerInMemory = new LocationTrackerInMemory();
+    public synchronized static LocationFilter getInstance() {
+        if (mLocationFilter == null) {
+            mLocationFilter = new LocationFilter();
         }
-        return mLocationTrackerInMemory;
+        return mLocationFilter;
     }
 
     /**

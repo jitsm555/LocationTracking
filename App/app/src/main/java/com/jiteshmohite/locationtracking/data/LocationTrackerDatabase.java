@@ -10,7 +10,7 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 
 /**
  * Helper for managing {@link SQLiteDatabase} that stores data for {@link LocationTrackerProvider}.
- * Created by jiteshmohite on 09/01/16.`
+ * Created by jitesh.mohite on 09/12/16.`
  */
 public class LocationTrackerDatabase extends SQLiteOpenHelper {
     private static final String TAG = makeLogTag(LocationTrackerDatabase.class);

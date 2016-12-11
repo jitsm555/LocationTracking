@@ -3,8 +3,8 @@ package com.jiteshmohite.locationtracking.data;
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.Locations.CONTENT_TYPE_ID;
 
 /**
- * The list of {@code Uri}s recognised by the {@code ContentProvider} of the app. segment.Created by
- * jiteshmohite on 10/01/16.
+ * The list of {@code Uri}s recognised by the {@code ContentProvider} of the app. segment.
+ * Created by jitesh.mohite on 10/12/16.
  */
 public enum LocationTrackerUriEnum {
 

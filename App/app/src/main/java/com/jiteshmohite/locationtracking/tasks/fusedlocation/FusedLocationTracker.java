@@ -8,14 +8,12 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.jiteshmohite.locationtracking.R;
-import com.jiteshmohite.locationtracking.service.LocationTrackerService;
 import com.jiteshmohite.locationtracking.util.GooglePlayServiceUtil;
 
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGD;
@@ -25,7 +23,7 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 
 /**
  * FusedLocationTracker class manages all functionality around requesting and removing location updates
- * Created by jitesh on 7/1/16.
+ * Created by jitesh.mohite on 7/12/16.
  */
 public class FusedLocationTracker implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ResultCallback<Status> {
@@ -105,24 +103,6 @@ public class FusedLocationTracker implements GoogleApiClient.ConnectionCallbacks
         return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-
-    @Override
-    public void onResult(Status status) {
-        if (status.isSuccess()) {
-            // Toggle the status of activity updates requested, and save in shared preferences.
-//            boolean requestingUpdates = !SharePrefUtil.getUpdatesRequestedLocationState(mContext);
-//            SharePrefUtil.setUpdatesRequestedLocationState(mContext, requestingUpdates);
-            // you can update ui here
-
-//            Toast.makeText(mContext, mContext.getString(requestingUpdates ? R.string
-//                            .loc_updates_added : R.string.loc_updates_removed),
-//                    Toast.LENGTH_SHORT).show();
-        } else {
-            LOGE(TAG, "Error adding or removing activity detection: " + status
-                    .getStatusMessage());
-        }
-    }
-
     /**
      * Gets a PendingIntent to be sent for every location .
      */
@@ -154,11 +134,7 @@ public class FusedLocationTracker implements GoogleApiClient.ConnectionCallbacks
     @Override
     public void onConnected(Bundle bundle) {
         LOGI(TAG, "Connected to GoogleApiClient");
-//        if (!SharePrefUtil.getUpdatesRequestedLocationState(mContext)) {
-//            requestLocationUpdates();
-//        } else {
-//            removeLocationUpdates();
-//        }
+        requestLocationUpdates();
     }
 
     @Override
@@ -169,5 +145,15 @@ public class FusedLocationTracker implements GoogleApiClient.ConnectionCallbacks
         mGoogleApiClient.connect();
     }
 
+
+    @Override
+    public void onResult(Status status) {
+        if (status.isSuccess()) {
+            LOGD(TAG, "Success :" + status);
+        } else {
+            LOGE(TAG, "Error adding or removing activity detection: " + status
+                    .getStatusMessage());
+        }
+    }
 
 }

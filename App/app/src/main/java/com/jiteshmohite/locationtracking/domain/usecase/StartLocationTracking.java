@@ -20,8 +20,14 @@ public class StartLocationTracking {
 
     // used to start location tracking
     public void startTracking() {
-        mFusedLocationTracker.startLocationTracker();
-        mActivityDetectionRequester.requestForActivityUpdates();
+        // connect ony when if it is not already requested.(Fused Location Api)
+        if (!mFusedLocationTracker.getGoogleApiClient().isConnected()) {
+            mFusedLocationTracker.startLocationTracker();
+        }
+        // connect ony when if it is not already requested.(Activity Recognition Api)
+        if (!mActivityDetectionRequester.getGoogleApiClient().isConnected()) {
+            mActivityDetectionRequester.startUserDetectionConnection();
+        }
     }
 
 }

@@ -4,8 +4,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Contract class for interacting with {@link LocationTrackerProvider}. Created by jiteshmohite on
- * 09/01/16.
+ * Contract class for interacting with {@link LocationTrackerProvider}.
+ * Created by jitesh.mohite on 09/12/16.
  */
 public class LocationTrackerContract {
 
@@ -28,7 +28,7 @@ public class LocationTrackerContract {
     }
 
 
-    public static final String CONTENT_AUTHORITY = "com.kratinmobile.locationtracker";
+    public static final String CONTENT_AUTHORITY = "com.jiteshmohite.locationtracker";
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 

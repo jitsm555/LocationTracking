@@ -12,9 +12,9 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.ActivityRecognition;
 import com.jiteshmohite.locationtracking.R;
-import com.jiteshmohite.locationtracking.service.ActivityRecognitionService;
 import com.jiteshmohite.locationtracking.util.GooglePlayServiceUtil;
 
+import static com.jiteshmohite.locationtracking.util.LogUtils.LOGD;
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGE;
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGI;
 import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
@@ -133,11 +133,7 @@ public class ActivityDetectionRequester
     @Override
     public void onConnected(Bundle bundle) {
         LOGI(TAG, "Connected to GoogleApiClient");
-//        if (!SharePrefUtil.getUpdatesRequestedActivityState(mContext)) {
-//            requestForActivityUpdates();
-//        } else {
-//            removeActivityUpdates();
-//        }
+        requestForActivityUpdates();
     }
 
     @Override
@@ -157,16 +153,7 @@ public class ActivityDetectionRequester
     @Override
     public void onResult(Status status) {
         if (status.isSuccess()) {
-            // Toggle the status of activity updates requested, and save in shared preferences.
-//            boolean requestingUpdates = !SharePrefUtil.getUpdatesRequestedActivityState(mContext);
-//            SharePrefUtil.setUpdatesRequestedActivityState(mContext, requestingUpdates);
-//             you can update ui here
-//
-//            Toast.makeText(mContext, mContext.getString(requestingUpdates ? R.string
-//                            .activity_updates_added :
-//                            R.string.activity_updates_removed),
-//                    Toast.LENGTH_SHORT
-//            ).show();
+            LOGD(TAG, "Success :" + status);
         } else {
             LOGE(TAG, "Error adding or removing activity detection: " + status
                     .getStatusMessage());

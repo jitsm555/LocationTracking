@@ -1,9 +1,5 @@
 package com.jiteshmohite.locationtracking.tasks;
 
-/**
- * Created by jitesh.mohite on 05-12-2016.
- */
-
 public interface ILocationTrackerPresenter {
 
     // shows whether location tracking is on or off

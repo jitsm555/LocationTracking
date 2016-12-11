@@ -1,4 +1,4 @@
-package com.jiteshmohite.locationtracking.service;
+package com.jiteshmohite.locationtracking.tasks.activityRecognition;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.IBinder;
 
 import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
+import com.jiteshmohite.locationtracking.LocationTrackerApplication;
+import com.jiteshmohite.locationtracking.tasks.fusedlocation.FusedLocationTracker;
 import com.jiteshmohite.locationtracking.util.ActivityRecognitionUtil;
 
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGD;
@@ -13,11 +15,15 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.LOGI;
 
 /**
  * ActivityRecognitionService service used for handling incoming intents that are generated as a
- * result of requesting activity Created by jitesh on 7/1/16.
+ * result of requesting activity Created by jitesh on 7/12/16.
  */
 public class ActivityRecognitionService extends IntentService {
 
     private static final String TAG = ActivityRecognitionService.class.getName();
+
+    private FusedLocationTracker mFusedLocationTracker;
+    private ActivityDetectionRequester mActivityDetectionRequester;
+    private boolean isTrackerOn;
 
     /*
      * This constructor is required, and calls the super IntentService(String)
@@ -31,13 +37,10 @@ public class ActivityRecognitionService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mFusedLocationTracker = LocationTrackerApplication.getFusedLocationTracker();
+        mActivityDetectionRequester = LocationTrackerApplication.getActivityDetectionRequester();
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -49,26 +52,18 @@ public class ActivityRecognitionService extends IntentService {
                 LOGI(TAG, "activities detected");
                 int activityType = mostProbableActivity.getType();
                 int confidence = mostProbableActivity.getConfidence();
-//                SharePrefUtil.setActivityConfidence(getApplicationContext(), confidence);
-//                SharePrefUtil.setActivityType(getApplicationContext(), activityType);
-
                 LOGD(TAG, ActivityRecognitionUtil.getActivityString(getApplicationContext(),
                         activityType) + " " + confidence + "%");
-
-                if (ActivityRecognitionUtil.isMoving(activityType) && (confidence >= 60)) {
-//                    if (SharePrefUtil.getRequestLocation(getApplicationContext())) {
-//                        LOGD(TAG, "Location Requested");
-//                        LocationTrackerApplication.getInstance().setLocationTracker(true);
-//                        SharePrefUtil.setRequestLocation(getApplicationContext(), false);
+                isTrackerOn = mFusedLocationTracker.getGoogleApiClient().isConnected();
+                if (ActivityRecognitionUtil.isMoving(activityType) && (confidence >= 60) && !isTrackerOn) {
+                    // start a location fetching service if it is not connected.
+                    mFusedLocationTracker.startLocationTracker();
+                } else {
+                    // stop a location fetching service if it is connected
+                    mFusedLocationTracker.removeLocationUpdates();
+                    mFusedLocationTracker.stopLocationTracker();
                 }
-            } else /*if (!SharePrefUtil.getRequestLocation(getApplicationContext())) {
-                        LOGD(TAG, "Location Removed");
-                        LocationTrackerApplication.getInstance().setLocationTracker(false);
-                        SharePrefUtil.setRequestLocation(getApplicationContext(), true);
-                    }*/ {
-                  
             }
-
         }
     }
 

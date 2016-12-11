@@ -16,12 +16,9 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 
 /**
  * LocationTrackerStore class will be taking care of providing api for storage Created by
- * jiteshmohite on 11/01/16.
+ * jitesh.mohite on 11/12/16.
  */
 public class LocationTrackerStore {
-
-    private static final String TAG = makeLogTag(LocationTrackerStore.class);
-
     /**
      * provide an api which used to insert location in db.
      */

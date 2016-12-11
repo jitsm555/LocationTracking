@@ -2,8 +2,9 @@ package com.jiteshmohite.locationtracking.tasks;
 
 
 import android.content.Context;
-import android.content.CursorLoader;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -11,17 +12,26 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.jiteshmohite.locationtracking.R;
 import com.jiteshmohite.locationtracking.data.LocationTrackerContract;
-import com.jiteshmohite.locationtracking.tasks.fusedlocation.LocationTrackerInMemory;
+import com.jiteshmohite.locationtracking.tasks.fusedlocation.LocationFilter;
+import com.jiteshmohite.locationtracking.util.CalenderUtil;
+import com.jiteshmohite.locationtracking.util.DateUtils;
 import com.jiteshmohite.locationtracking.util.LocationUtil;
+
+import java.util.List;
 
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_ACCURACY;
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_ALTITUDE;
@@ -31,23 +41,26 @@ import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.Loc
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_TIME;
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGD;
 import static com.jiteshmohite.locationtracking.util.LogUtils.LOGI;
+import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 
 /**
- * LocationTrackingFragment responsible for updating the navigation path on google path.
+ * LocationTrackingFragment class responsible for updating the navigation path on google path.
  * Created by jitesh.mohite on 05-12-2016.
  */
 
 public class LocationTrackerFragment extends Fragment implements ILocationTrackerView, View.OnClickListener,
         LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = LocationTrackerFragment.class.getSimpleName();
+    private static final String TAG = makeLogTag(LocationTrackerFragment.class);
 
     // The loader's unique id. Loader ids are specific to the Activity or
     // Fragment in which they reside.
     private static final int LOADER_ID = 1;
-
+    private static final float ZOOM_LEVEL = 15;
     private ILocationTrackerPresenter locationTrackerPresenter;
     private GoogleMap mGoogleMap;
     private Button mStartLocButton;
+    private static String startTime;
+    private static String endTime;
 
     public LocationTrackerFragment() {
         // Require empty public constructor
@@ -103,9 +116,9 @@ public class LocationTrackerFragment extends Fragment implements ILocationTracke
     private void updateView() {
         // depending on the location tracking on/off update text.
         if (locationTrackerPresenter.isLocationTrackingOn()) {
-            mStartLocButton.setText("Stop");
+            mStartLocButton.setText(getContext().getString(R.string.stop));
         } else {
-            mStartLocButton.setText("Start");
+            mStartLocButton.setText(getContext().getString(R.string.start));
         }
     }
 
@@ -149,8 +162,10 @@ public class LocationTrackerFragment extends Fragment implements ILocationTracke
                 // check which ensure whether to start location tracking or not.
                 if (locationTrackerPresenter.isLocationTrackingOn()) {
                     locationTrackerPresenter.stopLocationTracking();
+                    mStartLocButton.setText(getContext().getString(R.string.start));
                 } else {
                     locationTrackerPresenter.startLocationTracking();
+                    mStartLocButton.setText(getContext().getString(R.string.stop));
                 }
                 break;
         }
@@ -165,7 +180,8 @@ public class LocationTrackerFragment extends Fragment implements ILocationTracke
         String selection = null;
         String selectionArgs[] = null;
         String sortOrder = BaseColumns._ID + " ASC";
-        android.support.v4.content.CursorLoader cursorLoader = new android.support.v4.content.CursorLoader(getActivity().getApplicationContext(), uri, projection,
+        android.support.v4.content.CursorLoader cursorLoader = new android.support.v4.content.CursorLoader(getActivity()
+                .getApplicationContext(), uri, projection,
                 selection, selectionArgs, sortOrder);
         return cursorLoader;
     }
@@ -183,9 +199,11 @@ public class LocationTrackerFragment extends Fragment implements ILocationTracke
                 LOGD(TAG, cursor.getString(cursor.getColumnIndex(LOCATION_ALTITUDE)));
                 LOGD(TAG, cursor.getString(cursor.getColumnIndex(LOCATION_TIME)));
                 String time = cursor.getString(cursor.getColumnIndex(LOCATION_TIME));
-                LocationTrackerInMemory.getInstance().setLocation(time, LocationUtil.getLocation(cursor));
+                LocationFilter.getInstance().setLocation(time, LocationUtil.getLocation(cursor));
             } while (cursor.moveToNext());
         }
+        setDefaultTimeAndDrawRoute();
+        drawMarkerAndRoute();
     }
 
     @Override
@@ -196,6 +214,31 @@ public class LocationTrackerFragment extends Fragment implements ILocationTracke
         LOGI(TAG, "onLoaderReset");
     }
 
+    // used to draw route between given locations
+    private void drawMarkerAndRoute() {
+        LOGD(TAG, "start time :" + startTime + ", end time :" + endTime);
+        if (!TextUtils.isEmpty(startTime) && !TextUtils.isEmpty(endTime)) {
+            List<Location> locations = LocationUtil.getLocationBasedOnTime(DateUtils.getTimeInUTC(startTime),
+                    DateUtils.getTimeInUTC(endTime));
+            if (locations != null && locations.size() > 0) {
+                List<LatLng> latLngList = LocationUtil.getLatLongList(locations);
+                PolylineOptions options = new PolylineOptions().width(10).color(Color.BLUE);
+                for (int i = 0; i < latLngList.size(); i++) {
+                    LatLng point = latLngList.get(i);
+                    options.add(point);
+                }
+                mGoogleMap.addPolyline(options);
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(locations.get
+                        (0).getLatitude(), locations.get(0).getLongitude()), ZOOM_LEVEL));
+            }
+        }
+    }
+
+    // used to set default time
+    private void setDefaultTimeAndDrawRoute() {
+        startTime = CalenderUtil.getCurrentDate() + " " + CalenderUtil.getStartTime();
+        endTime = CalenderUtil.getCurrentDate() + " " + CalenderUtil.getCurrentTime();
+    }
 
 
 }

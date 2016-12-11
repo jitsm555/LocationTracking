@@ -17,7 +17,7 @@ import static com.jiteshmohite.locationtracking.util.LogUtils.makeLogTag;
 /**
  * {@link ContentProvider} that stores {@link LocationTrackerContract} data.Data is inserted by
  * Location which got from Location fused api and queried using {@link android.app.LoaderManager}
- * pattern. Created by jiteshmohite on 09/01/16.
+ * pattern. Created by jitesh.mohite on 09/12/16.
  */
 public class LocationTrackerProvider extends ContentProvider {
     private static final String TAG = makeLogTag(LocationTrackerProvider.class);

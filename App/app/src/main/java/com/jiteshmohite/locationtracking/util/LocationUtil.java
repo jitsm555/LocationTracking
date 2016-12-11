@@ -3,6 +3,14 @@ package com.jiteshmohite.locationtracking.util;
 import android.database.Cursor;
 import android.location.Location;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.jiteshmohite.locationtracking.tasks.fusedlocation.LocationFilter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_ACCURACY;
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_ALTITUDE;
 import static com.jiteshmohite.locationtracking.data.LocationTrackerContract.LocationColumns.LOCATION_LATITUDE;
@@ -43,5 +51,29 @@ public class LocationUtil {
         location.setAltitude(altitude);
         location.setTime(time);
         return location;
+    }
+
+
+    /**
+     * Used to get Locations based on time
+     */
+    public static List<Location> getLocationBasedOnTime(long startTime, long endTime) {
+        List<Location> locationList = new ArrayList<Location>();
+        HashMap<String, Location> locationMap = LocationFilter.getInstance().getLocation();
+        for (Map.Entry<String, Location> entry : locationMap.entrySet()) {
+            if (DateUtils.getTimeInUTC(entry.getKey()) >= startTime && DateUtils.getTimeInUTC(entry.getKey())
+                    <= endTime) {
+                locationList.add(entry.getValue());
+            }
+        }
+        return locationList;
+    }
+    // used to get LatLongList
+    public static List<LatLng> getLatLongList(List<Location> locationList) {
+        List<LatLng> latLngList = new ArrayList<LatLng>();
+        for (Location location : locationList) {
+            latLngList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+        }
+        return latLngList;
     }
 }
