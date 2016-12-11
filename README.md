@@ -1,5 +1,4 @@
-# laughing-octo-eureka
-Tracking location with minimum battery drainage
+# Tracking location with minimum battery drainage
 
 Location Tracking System (purpose minimum battery drainage)
 
